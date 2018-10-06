@@ -9,7 +9,7 @@ else
 	DIR=$(dirname $(readlink -f "$0"))
 fi
 
-for E in scripts; do
+s: Command not found.
 	if [ ! -e $HOME/$E ]; then
 		ln -sf $DIR/$E $HOME/$E
 	fi
