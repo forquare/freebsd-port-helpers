@@ -1,0 +1,3 @@
+[submodule "3rdparty/mondieu"]
+	path = 3rdparty/mondieu
+	url = git@github.com:skoef/mondieu.git
