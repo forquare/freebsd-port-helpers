@@ -19,4 +19,5 @@ if [ ! -e $HOME/bin ]; then
 	mkdir $HOME/bin
 fi
 
-git -C $DIR submodule update --recursive --remote > /dev/null 2>&1
+git -C $DIR submodule init > /dev/null 2>&1
+git -C $DIR submodule update > /dev/null 2>&1
