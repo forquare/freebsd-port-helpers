@@ -159,9 +159,11 @@ func pullDetails(req []Require) ([]string) {
 			repo = splitted[2]
 		}
 
+		/*
 		if repo == "jwalterweatherman" {
 			repo = "jWalterWeatherman"
 		}
+		*/
 
 		repo2 := repo
 
