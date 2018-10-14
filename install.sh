@@ -9,7 +9,7 @@ else
 	DIR=$(dirname $(readlink -f "$0"))
 fi
 
-for E in scripts; do
+for E in scripts go; do
 	if [ ! -e $HOME/$E ]; then
 		ln -sf $DIR/$E $HOME/$E
 	fi
