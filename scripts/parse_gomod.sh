@@ -33,21 +33,24 @@ if ! fetch -q -o "${TAR}" "${URL}"; then
 	usage 'Error downloading file' 4
 fi
 
-TMPDIR=$(mktemp -d /tmp/$0.XXXXX)
+TMPDIR=$(mktemp -d /tmp/$(basename $0).XXXXX)
 
 tar xf "${TAR}" -C ${TMPDIR}
 
-GOMOD=$(cd ${TMPDIR}/*/ && go mod graph | awk '{print $2}' | sort | uniq)
+PROJECT_REPO=$(dirname $(dirname $(echo "${URL}" | sed 's|.*//||')))
+GOMOD=$(cd ${TMPDIR}/*/ && go list -m all | grep -v "${PROJECT_REPO}")
 rm -rf ${TMPDIR} "${TAR}"
 
+IFS='
+'
 for E in $(echo "$GOMOD"); do
-	url=$(echo ${E} | awk -F@ '{print $1}')
-	revision=$(echo ${E} | awk -F@ '{print $2}')
+	url=$(echo ${E} | awk '{print $1}')
+	revision=$(echo ${E} | awk '{print $2}')
 	
-	# Try to weed out duplicate repos
-	latest=$(echo "$GOMOD" | grep "${url}" | awk -F@ '{print $2}' | sort | tail -1)
-	if [ "${latest}" != ${revision} ]; then
-		continue
+	# Try to do replacements
+	if echo ${E} | grep " => " > /dev/null; then
+		url=$(echo ${E} | awk '{print $4}')
+		revision=$(echo ${E} | awk '{print $5}')
 	fi
 	
 	site=$(echo ${url} | awk -F/ '{print $1}')
@@ -86,5 +89,5 @@ for E in $(echo "$GOMOD"); do
 	#echo "${account}:${repo}:${tag}:${underscore_repo}/src/${url}"
 	printf '\t\t%s:%s:%s:%s/src/%s\n' "${account}" "${repo}" "${tag}" "${underscore_repo}" "${url}"
 	
-done | sort | uniq | awk 'NR>1{print prev " \\"} {prev=$0} END{ if (NR) print prev (prev == "" ? "" : "") }'
+done | awk 'NR>1{print prev " \\"} {prev=$0} END{ if (NR) print prev (prev == "" ? "" : "") }'
 
