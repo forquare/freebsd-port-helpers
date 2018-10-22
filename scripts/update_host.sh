@@ -6,6 +6,12 @@ else
 	RELEASE=$(uname -r)
 fi
 
+if [ "$#" -gt 1 ]; then
+	DIR="${2}"
+else
+	DIR='snapshots'
+fi
+
 DATE=$(date "+%Y%m%d")
 ARCH=$(uname -m)
 
@@ -17,6 +23,6 @@ EXCLUDE_FILES="/etc/shells /etc/sysctl.conf /etc/passwd /etc/master.passwd /etc/
 
 /usr/local/sbin/beadm create "${RELEASE}-${DATE}"
 
-$HOME/scripts/3rdparty/mondieu/mondieu -w "${OVERWRITE_FILES}" -x "${EXCLUDE_FILES}" -p base,kernel -y -U ftp://ftp.FreeBSD.org/pub/FreeBSD/snapshots/${ARCH}/${ARCH}/${RELEASE} ${RELEASE}
+$HOME/scripts/3rdparty/mondieu/mondieu -w "${OVERWRITE_FILES}" -x "${EXCLUDE_FILES}" -p base,kernel -y -U ftp://ftp.FreeBSD.org/pub/FreeBSD/${DIR}/${ARCH}/${ARCH}/${RELEASE} ${RELEASE}
 
 echo "Host upgraded, please reboot"

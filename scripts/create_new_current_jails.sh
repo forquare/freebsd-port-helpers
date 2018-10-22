@@ -11,13 +11,20 @@ else
 	exit 1
 fi
 
+if [ "$#" -gt 1 ]; then
+	DIR="${2}"
+else
+	DIR='snapshots'
+fi
+
 for ARCH in amd64 i386; do
 	poudriere jail -c \
 			-v ${RELEASE} \
 			-a ${ARCH} \
 			-p local \
-			-m url=ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/${ARCH}/${ARCH}/${RELEASE} \
+			-m url=ftp://ftp.freebsd.org/pub/FreeBSD/${DIR}/${ARCH}/${ARCH}/${RELEASE} \
 			-j ${JAIL_RELEASE_NAME}__${ARCH}
 done
+
 #poudriere jail -c -v ${RELEASE} -a amd64 -p local -m url=ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/amd64/amd64/${RELEASE} -j ${RELEASE}__amd64
 #poudriere jail -c -v ${RELEASE} -a i386 -p local -m url=ftp://ftp.freebsd.org/pub/FreeBSD/snapshots/i386/i386/${RELEASE} -j ${RELEASE}__i386
