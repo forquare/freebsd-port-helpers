@@ -78,6 +78,9 @@ for E in $(echo "$GOMOD"); do
 	if echo ${revision} | grep '^[vV][[:digit:].]*$' > /dev/null; then
 		# We've got a standalone version, e.g. v1.2.3
 		tag="${revision}"
+	elif echo ${revision} | grep '[vV][[:digit:].]*-[[:digit:]]\.[[:digit:]]\{14\}-[[:alnum:]]\{12\}' > /dev/null; then
+		# We've got a tag that looks like: v1.0.1-0.20181028145347-94f6ae3ed3bc
+		tag=$(echo ${revision} | awk -F- '$3 > 0 {print substr($3,1,7)}')
 	elif echo ${revision} | grep '[vV][[:digit:].]*-[[:digit:]]\{14\}-[[:alnum:]]\{12\}' > /dev/null; then
 		# We've got a tag that looks like: v0.0.0-20180624165032-615eaa47ef79
 		tag=$(echo ${revision} | awk -F- '$3 > 0 {print substr($3,1,7)}')
