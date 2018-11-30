@@ -67,6 +67,9 @@ for E in $(echo "$GOMOD"); do
 		else
 			echo "-- MANUALLY DO ${E} --"
 		fi
+	elif echo "${site}" | grep '^github.com' > /dev/null; then
+		# Make sure Github URLs only have github.com/account/repo
+		url=$(echo ${url} | awk -F/ '{print $1 "/" $2 "/" $3}')
 	fi
 	
 	if [ -z ${repo} ]; then
