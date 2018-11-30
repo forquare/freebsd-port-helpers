@@ -38,7 +38,7 @@ TMPDIR=$(mktemp -d /tmp/$(basename $0).XXXXX)
 tar xf "${TAR}" -C ${TMPDIR}
 
 PROJECT_REPO=$(dirname $(dirname $(echo "${URL}" | sed 's|.*//||')))
-GOMOD=$(cd ${TMPDIR}/*/ && go list -m all | grep -v "${PROJECT_REPO}")
+GOMOD=$(cd ${TMPDIR}/*/ && go list -m all 2>/dev/null | grep -v "${PROJECT_REPO}")
 rm -rf ${TMPDIR} "${TAR}"
 
 IFS='
