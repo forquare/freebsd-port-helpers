@@ -76,7 +76,7 @@ for E in $(echo "$GOMOD"); do
 	underscore_repo=$(echo ${repo} | sed 's/-/_/g')
 	# If there is another repo with the same name, give this one a different
 	# underscore_repo / group
-	if echo ${GOMOD} | tr ' ' '\n' | grep -vi "${account}" | grep -i "${repo}" > /dev/null; then
+	if echo "${GOMOD}" | grep -vi "${E}" | grep -i "${repo}" > /dev/null; then
 		underscore_repo="${account}_${underscore_repo}"
 	fi
 	
