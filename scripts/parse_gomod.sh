@@ -38,7 +38,7 @@ TMPDIR=$(mktemp -d /tmp/$(basename $0).XXXXX)
 tar xf "${TAR}" -C ${TMPDIR}
 
 PROJECT_REPO=$(dirname $(dirname $(echo "${URL}" | sed 's|.*//||')))
-GOMOD=$(cd ${TMPDIR}/*/ && go list -m all | grep -v "${PROJECT_REPO}")
+GOMOD=$(cd ${TMPDIR}/*/ && go list -m all 2>/dev/null | grep -v "${PROJECT_REPO}")
 rm -rf ${TMPDIR} "${TAR}"
 
 IFS='
@@ -67,6 +67,9 @@ for E in $(echo "$GOMOD"); do
 		else
 			echo "-- MANUALLY DO ${E} --"
 		fi
+	elif echo "${site}" | grep '^github.com' > /dev/null; then
+		# Make sure Github URLs only have github.com/account/repo
+		url=$(echo ${url} | awk -F/ '{print $1 "/" $2 "/" $3}')
 	fi
 	
 	if [ -z ${repo} ]; then
@@ -75,8 +78,8 @@ for E in $(echo "$GOMOD"); do
 	
 	group=$(echo ${repo} | sed 's/-/_/g')
 	# If there is another repo with the same name, give this one a different
-	# group / group
-	if echo ${GOMOD} | tr ' ' '\n' | grep -vi "${account}" | grep -i "${repo}" > /dev/null; then
+	# group
+	if echo "${GOMOD}" | grep -vi "${E}" | grep -i "${repo}" > /dev/null; then
 		group="${account}_${group}"
 	fi
 	
