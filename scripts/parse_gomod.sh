@@ -73,11 +73,11 @@ for E in $(echo "$GOMOD"); do
 		repo=$(echo ${url} | awk -F/ '{print $3}')
 	fi
 	
-	underscore_repo=$(echo ${repo} | sed 's/-/_/g')
+	group=$(echo ${repo} | sed 's/-/_/g')
 	# If there is another repo with the same name, give this one a different
-	# underscore_repo / group
+	# group / group
 	if echo ${GOMOD} | tr ' ' '\n' | grep -vi "${account}" | grep -i "${repo}" > /dev/null; then
-		underscore_repo="${account}_${underscore_repo}"
+		group="${account}_${group}"
 	fi
 	
 	if echo ${revision} | grep '^[vV][[:digit:].]*$' > /dev/null; then
@@ -94,8 +94,8 @@ for E in $(echo "$GOMOD"); do
 		tag=$(echo ${revision} | awk -F+ '{print $1}')
 	fi
 	
-	#echo "${account}:${repo}:${tag}:${underscore_repo}/src/${url}"
-	printf '\t\t%s:%s:%s:%s/src/%s\n' "${account}" "${repo}" "${tag}" "${underscore_repo}" "${url}"
+	#echo "${account}:${repo}:${tag}:${group}/src/${url}"
+	printf '\t\t%s:%s:%s:%s/src/%s\n' "${account}" "${repo}" "${tag}" "${group}" "${url}"
 	
 done | awk 'NR>1{print prev " \\"} {prev=$0} END{ if (NR) print prev (prev == "" ? "" : "") }'
 
