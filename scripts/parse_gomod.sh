@@ -57,6 +57,7 @@ for E in $(echo "$GOMOD"); do
 	account=$(echo ${url} | awk -F/ '{print $2}')
 	repo=''
 	tag='XXXXX'
+
 	
 	if echo "${site}" | grep '^golang.org' > /dev/null; then
 		account='golang'
@@ -64,16 +65,55 @@ for E in $(echo "$GOMOD"); do
 		if echo "${account}" | grep '\.v[0-9]*$' > /dev/null; then
 			repo=$(basename "${account}" | sed 's/\.v[0-9]*$//')
 			account="go-${repo}"
+		elif echo "${url}" | grep -q '\.v[0-9]*$'; then
+			repo=$(echo "${url}" | awk -F/ '{print $3}' | sed 's/\.v[0-9]*$//')
+			account=$(echo ${url} | awk -F/ '{print $2}')
 		else
 			echo "-- MANUALLY DO ${E} --"
 		fi
+	elif echo "${site}" | grep -q 'bazil.org'; then
+		repo="${account}"
+		account='bazil'
+	elif echo "${site}" | grep -q 'contrib.go.opencensus.io'; then
+		account='census-ecosystem'
+		_repo=$(basename "${url}")
+		_account=$(echo ${url} | awk -F/ '{print $2}')
+		repo="opencensus-go-${_account}-${_repo}"
+	elif echo "${site}" | grep -q 'go.etcd.io'; then
+		repo="${account}"
+		account='etcd-io'
+	elif echo "${site}" | grep -q 'go.uber.org'; then
+		repo="${account}"
+		account='uber-go'
+	elif echo "${site}" | grep -q 'pack.ag'; then
+		repo="${account}"
+		account='vcabbage'
+	elif echo "${site}" | grep -q 'go.mongodb.org'; then
+		if echo "${account}" | grep -q 'mongo-driver'; then
+			repo='mongo-go-driver'
+			account='mongodb'
+		else
+			echo "-- MANUALLY DO ${E} --"
+		fi
+	elif echo "${site}" | grep -q 'honnef.co'; then
+		repo=$(echo ${url} | awk -F/ '{print $2 "-" $3}')
+		account='dominikh'
+	elif echo "${site}" | grep -q 'gocloud.dev'; then
+		repo='go-cloud'
+		account='google'
 	elif echo "${site}" | grep '^github.com' > /dev/null; then
 		# Make sure Github URLs only have github.com/account/repo
 		url=$(echo ${url} | awk -F/ '{print $1 "/" $2 "/" $3}')
 	fi
 	
+	# If we haven't used some special repo, use the 3rd field in URL
 	if [ -z ${repo} ]; then
 		repo=$(echo ${url} | awk -F/ '{print $3}')
+	fi
+	
+	# If we still don't have a repo, skip
+	if [ -z ${repo} ]; then
+		continue
 	fi
 	
 	group=$(echo ${repo} | sed 's/-/_/g')
