@@ -30,7 +30,7 @@ fi
 URL="$1"
 TAR=/tmp/$(basename "${URL}")
 
-if ! fetch -q -o "${TAR}" "${URL}"; then
+if ! curl -sL -o "${TAR}" "${URL}"; then
         usage 'Error downloading file' 4
 fi
 
