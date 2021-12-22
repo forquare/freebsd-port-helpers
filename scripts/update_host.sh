@@ -21,7 +21,7 @@ OVERWRITE_FILES="/etc/devd/hyperv.conf /etc/devd/usb.conf /etc/devd/zfs.conf /et
 
 EXCLUDE_FILES="/etc/shells /etc/sysctl.conf /etc/passwd /etc/master.passwd /etc/group"
 
-/usr/local/sbin/beadm create "${RELEASE}-${DATE}"
+/sbin/bectl create "${RELEASE}-${DATE}"
 
 $HOME/scripts/3rdparty/mondieu/mondieu -w "${OVERWRITE_FILES}" -x "${EXCLUDE_FILES}" -p base,kernel -y -U ftp://ftp.FreeBSD.org/pub/FreeBSD/${DIR}/${ARCH}/${ARCH}/${RELEASE} ${RELEASE}
 
