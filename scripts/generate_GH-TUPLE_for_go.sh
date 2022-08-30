@@ -40,4 +40,5 @@ tar xf "${TAR}" -C ${TMPDIR}
 
 cd ${TMPDIR}/*
 go mod vendor
-modules2tuple vendor/modules.txt
+. ~/github_creds
+~/modules2tuple/modules2tuple vendor/modules.txt
