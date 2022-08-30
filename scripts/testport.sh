@@ -1,7 +1,6 @@
 #!/bin/sh
 
 columns=80
-set -x
 
 testport () {
 	for JAIL in $(poudriere jail -nlq); do
