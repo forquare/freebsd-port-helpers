@@ -1,6 +1,7 @@
 #!/bin/sh
 
 columns=80
+set -x
 
 testport () {
 	for JAIL in $(poudriere jail -nlq); do
@@ -14,7 +15,7 @@ testport () {
 			fi
 			echo ''
 		done
-		poudriere testport -p local ${2:+-z $2} -j $JAIL -o ${1}
+		poudriere testport -v -b latest -p local ${2:+-z $2} -j $JAIL -o ${1}
 		echo ''
 	done
 }
@@ -30,7 +31,7 @@ if [ ! -d /usr/ports/$1 ]; then
 fi
 
 printf "%s\n" "Do you need to update the jails or run 'poudriere options'?"
-for i in $(seq 10 1); do
+for i in $(seq 5 1); do
 	printf "%s%*s\r" "Countdown: $i" $((columns - (11 + ${#i}))) " "
 	sleep 1
 done
