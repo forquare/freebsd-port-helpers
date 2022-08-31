@@ -3,29 +3,51 @@
 usage(){
 	cat <<EOF
 Creates new poudriere jails for both i386 and amd64
-create_new_jails.sh <release_name> <directory>
+create_new_jails.sh <release_name> [directory]
 
 e.g. 
+create_new_jails.sh 15.0-CURRENT 
 create_new_jails.sh 14.0-CURRENT snapshots
 create_new_jails.sh 13.1-RELEASE releases
+
+If [directoty] is missing then the script will guess:
+"-RELEASE" will be retrieved from 'releases'
+Othrwise it will be retrieved from 'snapshots'
 EOF
 }
 
-if [ "$#" -lt 2 ]; then
+if [ "$#" -lt 1 ]; then
 	usage
 	exit 1
 fi
 
 RELEASE="${1}"
 JAIL_RELEASE_NAME=$(echo ${RELEASE} | sed 's/\./_/g')
-DIR="${2}"
+
+if [ "$#" -eq 2 ]; then
+	DIR="${2}"
+	if [ "${DIR}" = "releases" ]; then
+		METHOD="ftp"
+	else
+		METHOD="url=ftp://ftp.freebsd.org/pub/FreeBSD/${DIR}/${ARCH}/${ARCH}/${RELEASE}"
+	fi
+else
+	if echo ${RELEASE} | grep -qi 'RELEASE$'; then
+		METHOD="ftp"
+	else
+		DIR='snapshots'
+		METHOD="url=ftp://ftp.freebsd.org/pub/FreeBSD/${DIR}/${ARCH}/${ARCH}/${RELEASE}"
+	fi
+fi
+
+
 
 for ARCH in amd64 i386; do
 	poudriere jail -c \
 			-v ${RELEASE} \
 			-a ${ARCH} \
 			-p local \
-			-m url=ftp://ftp.freebsd.org/pub/FreeBSD/${DIR}/${ARCH}/${ARCH}/${RELEASE} \
+			-m ${METHOD} \
 			-j ${JAIL_RELEASE_NAME}__${ARCH}
 done
 
